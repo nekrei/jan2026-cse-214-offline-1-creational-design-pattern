@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import builders.IOrderBuilder;
+import builders.OrderBuilder;
+import directors.Director;
+
 /**
  * Coordinates order creation.
  *
@@ -31,33 +35,37 @@ public class OrderService {
                                      String couponCode,
                                      boolean rushOrder,
                                      String specialInstructions) {
-        return new Order(nextOrderId(), customerName, phone,
-                DeliveryType.DELIVERY,
-                address,
-                PaymentMethod.CASH,
-                null,
-                couponCode,
-                false,
-                true,
-                0,
-                rushOrder,
-                items,
-                specialInstructions);
+        // return new Order(nextOrderId(), customerName, phone,
+        //         DeliveryType.DELIVERY,
+        //         address,
+        //         PaymentMethod.CASH,
+        //         null,
+        //         couponCode,
+        //         false,
+        //         true,
+        //         0,
+        //         rushOrder,
+        //         items,
+        //         specialInstructions);
+        IOrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
+        return new Director(builder).buildDeliveryOrder(address, couponCode, rushOrder, specialInstructions);
     }
 
     public Order createPickupOrder(String customerName, String phone, List<OrderItem> items) {
-        return new Order(nextOrderId(), customerName, phone,
-                DeliveryType.PICKUP,
-                "",
-                PaymentMethod.CASH,
-                null,
-                "",
-                false,
-                true,
-                0,
-                false,
-                items,
-                "");
+        // return new Order(nextOrderId(), customerName, phone,
+        //         DeliveryType.PICKUP,
+        //         "",
+        //         PaymentMethod.CASH,
+        //         null,
+        //         "",
+        //         false,
+        //         true,
+        //         0,
+        //         false,
+        //         items,
+        //         "");
+        IOrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
+        return new Director(builder).buildPickupOrder();
     }
 
     public Order createScheduledGiftOrder(String customerName,
@@ -65,18 +73,20 @@ public class OrderService {
                                           String address,
                                           List<OrderItem> items,
                                           LocalDateTime scheduledTime) {
-        return new Order(nextOrderId(), customerName, phone,
-                DeliveryType.DELIVERY,
-                address,
-                PaymentMethod.CARD,
-                scheduledTime,
-                "WELCOME10",
-                true,
-                false,
-                25,
-                false,
-                items,
-                "Please call before delivery");
+        // return new Order(nextOrderId(), customerName, phone,
+        //         DeliveryType.DELIVERY,
+        //         address,
+        //         PaymentMethod.CARD,
+        //         scheduledTime,
+        //         "WELCOME10",
+        //         true,
+        //         false,
+        //         25,
+        //         false,
+        //         items,
+        //         "Please call before delivery");
+        IOrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
+        return new Director(builder).buildScheduledGiftOrder(address, scheduledTime);
     }
 
     public Order createSampleFamilyOrder(MenuCatalog catalog) {
@@ -86,20 +96,22 @@ public class OrderService {
         items.add(new OrderItem(catalog.findByCode("D02"), 4, Size.MEDIUM, false, false, "less sugar"));
         items.add(new OrderItem(catalog.findByCode("S02"), 2, Size.LARGE, false, true, ""));
 
-        return new Order(nextOrderId(),
-                "Sample Family",
-                "01711111111",
-                DeliveryType.DELIVERY,
-                "House 25, Road 4, Dhanmondi",
-                PaymentMethod.MOBILE_BANKING,
-                null,
-                "FAMILY15",
-                false,
-                true,
-                50,
-                true,
-                items,
-                "Deliver together");
+        // return new Order(nextOrderId(),
+        //         "Sample Family",
+        //         "01711111111",
+        //         DeliveryType.DELIVERY,
+        //         "House 25, Road 4, Dhanmondi",
+        //         PaymentMethod.MOBILE_BANKING,
+        //         null,
+        //         "FAMILY15",
+        //         false,
+        //         true,
+        //         50,
+        //         true,
+        //         items,
+        //         "Deliver together");
+        IOrderBuilder builder = new OrderBuilder(nextOrderId(), "Sample Family", "01711111111", items);
+        return new Director(builder).buildSampleFamilyOrder();
     }
 
     private String nextOrderId() {
