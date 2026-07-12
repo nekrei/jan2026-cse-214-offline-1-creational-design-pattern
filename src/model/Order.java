@@ -1,10 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Represents a placed food order.
@@ -35,50 +32,70 @@ public class Order {
     private final List<OrderItem> items;
     private final String specialInstructions;
 
-    public Order(String orderId,
-                 String customerName,
-                 String phone,
-                 DeliveryType deliveryType,
-                 String deliveryAddress,
-                 PaymentMethod paymentMethod,
-                 LocalDateTime scheduledTime,
-                 String couponCode,
-                 boolean giftWrap,
-                 boolean cutleryRequired,
-                 int loyaltyPointsToRedeem,
-                 boolean rushOrder,
-                 List<OrderItem> items,
-                 String specialInstructions) {
-        this.orderId = requireNonBlank(orderId, "Order id");
-        this.customerName = requireNonBlank(customerName, "Customer name");
-        this.phone = requireNonBlank(phone, "Phone");
-        this.deliveryType = deliveryType != null ? deliveryType : DeliveryType.PICKUP;
-        this.paymentMethod = paymentMethod != null ? paymentMethod : PaymentMethod.CASH;
-        this.scheduledTime = scheduledTime;
-        this.couponCode = couponCode != null ? couponCode.trim().toUpperCase() : "";
-        this.giftWrap = giftWrap;
-        this.cutleryRequired = cutleryRequired;
-        this.loyaltyPointsToRedeem = Math.max(0, loyaltyPointsToRedeem);
-        this.rushOrder = rushOrder;
-        this.specialInstructions = specialInstructions != null ? specialInstructions.trim() : "";
-
-        if (this.deliveryType == DeliveryType.DELIVERY) {
-            this.deliveryAddress = requireNonBlank(deliveryAddress, "Delivery address");
-        } else {
-            this.deliveryAddress = deliveryAddress != null ? deliveryAddress.trim() : "";
-        }
-
-        Objects.requireNonNull(items, "Items cannot be null");
-        if (items.isEmpty()) {
-            throw new IllegalArgumentException("Order must contain at least one item");
-        }
-        this.items = Collections.unmodifiableList(new ArrayList<>(items));
+    Order(OrderBuilder b) {
+        this.orderId = b.orderId;
+        this.customerName = b.customerName;
+        this.phone = b.phone;
+        this.deliveryType = b.deliveryType;
+        this.deliveryAddress = b.deliveryAddress;
+        this.paymentMethod = b.paymentMethod;
+        this.scheduledTime = b.scheduledTime;
+        this.couponCode = b.couponCode;
+        this.giftWrap = b.giftWrap;
+        this.cutleryRequired = b.cutleryRequired;
+        this.loyaltyPointsToRedeem = b.loyaltyPointsToRedeem;
+        this.rushOrder = b.rushOrder;
+        this.items = b.items;
+        this.specialInstructions = b.specialInstructions;
     }
 
-    public Order(String orderId, String customerName, String phone, List<OrderItem> items) {
-        this(orderId, customerName, phone, DeliveryType.PICKUP, "", PaymentMethod.CASH,
-                null, "", false, true, 0, false, items, "");
-    }
+    // public Order(String orderId,
+    //              String customerName,
+    //              String phone,
+    //              DeliveryType deliveryType,
+    //              String deliveryAddress,
+    //              PaymentMethod paymentMethod,
+    //              LocalDateTime scheduledTime,
+    //              String couponCode,
+    //              boolean giftWrap,
+    //              boolean cutleryRequired,
+    //              int loyaltyPointsToRedeem,
+    //              boolean rushOrder,
+    //              List<OrderItem> items,
+    //              String specialInstructions) {
+    //     this.orderId = requireNonBlank(orderId, "Order id");
+    //     this.customerName = requireNonBlank(customerName, "Customer name");
+    //     this.phone = requireNonBlank(phone, "Phone");
+    //     this.deliveryType = deliveryType != null ? deliveryType : DeliveryType.PICKUP;
+    //     this.paymentMethod = paymentMethod != null ? paymentMethod : PaymentMethod.CASH;
+    //     this.scheduledTime = scheduledTime;
+    //     this.couponCode = couponCode != null ? couponCode.trim().toUpperCase() : "";
+    //     this.giftWrap = giftWrap;
+    //     this.cutleryRequired = cutleryRequired;
+    //     this.loyaltyPointsToRedeem = Math.max(0, loyaltyPointsToRedeem);
+    //     this.rushOrder = rushOrder;
+    //     this.specialInstructions = specialInstructions != null ? specialInstructions.trim() : "";
+
+    //     if (this.deliveryType == DeliveryType.DELIVERY) {
+    //         this.deliveryAddress = requireNonBlank(deliveryAddress, "Delivery address");
+    //     } else {
+    //         this.deliveryAddress = deliveryAddress != null ? deliveryAddress.trim() : "";
+    //     }
+
+    //     Objects.requireNonNull(items, "Items cannot be null");
+    //     if (items.isEmpty()) {
+    //         throw new IllegalArgumentException("Order must contain at least one item");
+    //     }
+    //     this.items = Collections.unmodifiableList(new ArrayList<>(items));
+    // }
+
+    
+
+    // public Order(String orderId, String customerName, String phone, List<OrderItem> items) {
+    //     this(orderId, customerName, phone, DeliveryType.PICKUP, "", PaymentMethod.CASH,
+    //             null, "", false, true, 0, false, items, "");
+    // }
+
 
     public String getOrderId() {
         return orderId;
@@ -170,12 +187,4 @@ public class Order {
         return Math.max(0.0, getSubtotal() + getServiceCharges() - getDiscount());
     }
 
-    private static String requireNonBlank(String value, String fieldName) {
-        Objects.requireNonNull(value, fieldName + " cannot be null");
-        String trimmed = value.trim();
-        if (trimmed.isEmpty()) {
-            throw new IllegalArgumentException(fieldName + " cannot be blank");
-        }
-        return trimmed;
-    }
 }

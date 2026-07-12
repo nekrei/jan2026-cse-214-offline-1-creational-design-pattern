@@ -1,18 +1,15 @@
 package service;
 
-import model.DeliveryType;
 import model.MenuItem;
 import model.Order;
+import model.OrderBuilder;
 import model.OrderItem;
-import model.PaymentMethod;
 import model.Size;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.List;
 
-import builders.IOrderBuilder;
-import builders.OrderBuilder;
 import directors.Director;
 
 /**
@@ -35,37 +32,16 @@ public class OrderService {
                                      String couponCode,
                                      boolean rushOrder,
                                      String specialInstructions) {
-        // return new Order(nextOrderId(), customerName, phone,
-        //         DeliveryType.DELIVERY,
-        //         address,
-        //         PaymentMethod.CASH,
-        //         null,
-        //         couponCode,
-        //         false,
-        //         true,
-        //         0,
-        //         rushOrder,
-        //         items,
-        //         specialInstructions);
-        IOrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
-        return new Director(builder).buildDeliveryOrder(address, couponCode, rushOrder, specialInstructions);
+        OrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
+        new Director(builder).buildDeliveryOrder(address, couponCode, rushOrder, specialInstructions);
+        return builder.build();
     }
 
     public Order createPickupOrder(String customerName, String phone, List<OrderItem> items) {
-        // return new Order(nextOrderId(), customerName, phone,
-        //         DeliveryType.PICKUP,
-        //         "",
-        //         PaymentMethod.CASH,
-        //         null,
-        //         "",
-        //         false,
-        //         true,
-        //         0,
-        //         false,
-        //         items,
-        //         "");
-        IOrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
-        return new Director(builder).buildPickupOrder();
+        
+        OrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
+        new Director(builder).buildPickupOrder();
+        return builder.build();
     }
 
     public Order createScheduledGiftOrder(String customerName,
@@ -73,20 +49,9 @@ public class OrderService {
                                           String address,
                                           List<OrderItem> items,
                                           LocalDateTime scheduledTime) {
-        // return new Order(nextOrderId(), customerName, phone,
-        //         DeliveryType.DELIVERY,
-        //         address,
-        //         PaymentMethod.CARD,
-        //         scheduledTime,
-        //         "WELCOME10",
-        //         true,
-        //         false,
-        //         25,
-        //         false,
-        //         items,
-        //         "Please call before delivery");
-        IOrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
-        return new Director(builder).buildScheduledGiftOrder(address, scheduledTime);
+        OrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
+        new Director(builder).buildScheduledGiftOrder(address, scheduledTime);
+        return builder.build();
     }
 
     public Order createSampleFamilyOrder(MenuCatalog catalog) {
@@ -95,23 +60,9 @@ public class OrderService {
         items.add(new OrderItem(catalog.findByCode("B02"), 3, Size.MEDIUM, true, true, ""));
         items.add(new OrderItem(catalog.findByCode("D02"), 4, Size.MEDIUM, false, false, "less sugar"));
         items.add(new OrderItem(catalog.findByCode("S02"), 2, Size.LARGE, false, true, ""));
-
-        // return new Order(nextOrderId(),
-        //         "Sample Family",
-        //         "01711111111",
-        //         DeliveryType.DELIVERY,
-        //         "House 25, Road 4, Dhanmondi",
-        //         PaymentMethod.MOBILE_BANKING,
-        //         null,
-        //         "FAMILY15",
-        //         false,
-        //         true,
-        //         50,
-        //         true,
-        //         items,
-        //         "Deliver together");
-        IOrderBuilder builder = new OrderBuilder(nextOrderId(), "Sample Family", "01711111111", items);
-        return new Director(builder).buildSampleFamilyOrder();
+        OrderBuilder builder = new OrderBuilder(nextOrderId(), "Sample Family", "01711111111", items);
+        new Director(builder).buildSampleFamilyOrder();
+        return builder.build();
     }
 
     private String nextOrderId() {

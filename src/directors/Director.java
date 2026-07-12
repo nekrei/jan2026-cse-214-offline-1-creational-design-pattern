@@ -2,34 +2,31 @@ package directors;
 
 import java.time.LocalDateTime;
 
-import builders.IOrderBuilder;
 import model.DeliveryType;
-import model.Order;
+import model.OrderBuilder;
 import model.PaymentMethod;
 
 public class Director {
-    private IOrderBuilder builder;
+    private OrderBuilder builder;
 
-    public Director(IOrderBuilder builder) {
+    public Director(OrderBuilder builder) {
         this.builder = builder;
     }
 
-    public Order buildDeliveryOrder(String adress, String coupon, boolean rushOrder, String specialInstructions) {
+    public void buildDeliveryOrder(String adress, String coupon, boolean rushOrder, String specialInstructions) {
         builder.setdeliveryType(DeliveryType.DELIVERY);
         builder.setdeliveryAddress(adress);
         builder.setcouponCode(coupon);
         builder.setrushOrder(rushOrder);
         builder.setspecialInstructions(specialInstructions);
-        return builder.build();
     }
 
-    public Order buildPickupOrder() {
+    public void buildPickupOrder() {
         builder.setdeliveryType(DeliveryType.PICKUP);
         builder.setcutleryRequired(true);
-        return builder.build();
     }
     
-    public Order buildScheduledGiftOrder(String address, LocalDateTime scheduledTime) {
+    public void buildScheduledGiftOrder(String address, LocalDateTime scheduledTime) {
         builder.setdeliveryType(DeliveryType.DELIVERY);
         builder.setdeliveryAddress(address);
         builder.setscheduledTime(scheduledTime);
@@ -40,10 +37,9 @@ public class Director {
         builder.setloyaltyPoints(25);
         builder.setrushOrder(false);
         builder.setspecialInstructions("Please call before delivery");
-        return builder.build();
     }
 
-    public Order buildSampleFamilyOrder() {
+    public void buildSampleFamilyOrder() {
         builder.setdeliveryType(DeliveryType.DELIVERY);
         builder.setdeliveryAddress("House 25, Road 4, Dhanmondi");
         builder.setpaymentMethod(PaymentMethod.MOBILE_BANKING);
@@ -52,6 +48,5 @@ public class Director {
         builder.setloyaltyPoints(50);
         builder.setrushOrder(true);
         builder.setspecialInstructions("Deliver together");
-        return builder.build();
     }
 }
