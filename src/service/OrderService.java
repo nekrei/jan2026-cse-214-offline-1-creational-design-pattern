@@ -1,16 +1,17 @@
 package service;
 
+import model.DeliveryType;
 import model.MenuItem;
 import model.Order;
 import model.OrderBuilder;
 import model.OrderItem;
+import model.PaymentMethod;
 import model.Size;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList; 
 import java.util.List;
 
-import directors.Director;
 
 /**
  * Coordinates order creation.
@@ -33,14 +34,18 @@ public class OrderService {
                                      boolean rushOrder,
                                      String specialInstructions) {
         OrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
-        new Director(builder).buildDeliveryOrder(address, couponCode, rushOrder, specialInstructions);
+        builder.setdeliveryType(DeliveryType.DELIVERY);
+        builder.setdeliveryAddress(address);
+        builder.setcouponCode(couponCode);
+        builder.setrushOrder(rushOrder);
+        builder.setspecialInstructions(specialInstructions);
         return builder.build();
     }
 
     public Order createPickupOrder(String customerName, String phone, List<OrderItem> items) {
-        
         OrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
-        new Director(builder).buildPickupOrder();
+        builder.setdeliveryType(DeliveryType.PICKUP);
+        builder.setcutleryRequired(true);
         return builder.build();
     }
 
@@ -50,7 +55,16 @@ public class OrderService {
                                           List<OrderItem> items,
                                           LocalDateTime scheduledTime) {
         OrderBuilder builder = new OrderBuilder(nextOrderId(), customerName, phone, items);
-        new Director(builder).buildScheduledGiftOrder(address, scheduledTime);
+        builder.setdeliveryType(DeliveryType.DELIVERY);
+        builder.setdeliveryAddress(address);
+        builder.setscheduledTime(scheduledTime);
+        builder.setpaymentMethod(PaymentMethod.CARD);
+        builder.setcouponCode("WELCOME10");
+        builder.setgiftWrap(true);
+        builder.setcutleryRequired(false);
+        builder.setloyaltyPoints(25);
+        builder.setrushOrder(false);
+        builder.setspecialInstructions("Please call before delivery");
         return builder.build();
     }
 
@@ -61,7 +75,14 @@ public class OrderService {
         items.add(new OrderItem(catalog.findByCode("D02"), 4, Size.MEDIUM, false, false, "less sugar"));
         items.add(new OrderItem(catalog.findByCode("S02"), 2, Size.LARGE, false, true, ""));
         OrderBuilder builder = new OrderBuilder(nextOrderId(), "Sample Family", "01711111111", items);
-        new Director(builder).buildSampleFamilyOrder();
+        builder.setdeliveryType(DeliveryType.DELIVERY);
+        builder.setdeliveryAddress("House 25, Road 4, Dhanmondi");
+        builder.setpaymentMethod(PaymentMethod.MOBILE_BANKING);
+        builder.setcouponCode("FAMILY15");
+        builder.setcutleryRequired(true);
+        builder.setloyaltyPoints(50);
+        builder.setrushOrder(true);
+        builder.setspecialInstructions("Deliver together");
         return builder.build();
     }
 
